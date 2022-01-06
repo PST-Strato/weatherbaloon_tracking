@@ -1,0 +1,22 @@
+{
+  "name": "weatherbaloon_tracking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ItsGodHere/weatherbaloon_tracking.git"
+  },
+  "author": "ItsGodHere",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ItsGodHere/weatherbaloon_tracking/issues"
+  },
+  "homepage": "https://github.com/ItsGodHere/weatherbaloon_tracking#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
