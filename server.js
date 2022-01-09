@@ -1,7 +1,7 @@
 var express = require("express");
 var serve_static = require("serve-static");
 var http = require("http");
-var fs = require("fs");
+var locationRoutes = require("./routes/location");
 
 var app = express();
 //Activation du serveur statique
@@ -9,6 +9,8 @@ app.use(serve_static(__dirname + "/public"));
 
 //Récupération du serveur http de l'application
 var serveur = http.Server(app);
+
+app.use("/location", locationRoutes);
 
 //Ecoute sur un seul port
 serveur.listen(8080, function () {

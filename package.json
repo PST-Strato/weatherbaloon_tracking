@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/ItsGodHere/weatherbaloon_tracking#readme",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "fs": "0.0.1-security",
+    "nodemon": "^2.0.15"
   }
 }
