@@ -1,3 +1,4 @@
+//TODO:display locations and marker
 var trackingMap = {
   props: ["locations"],
   data: function () {
@@ -5,7 +6,7 @@ var trackingMap = {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       zoom: 15,
-      center: [48.08809362529545, -0.7564902305603027],
+      center: [48.08809362529545, -0.7564902305603027], //TODO:refactor center
       polyline: {
         color: "green",
       },
@@ -26,7 +27,6 @@ var trackingMap = {
       @update:center="centerUpdated"
     >
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-polyline :lat-lngs="locations" :color="polyline.color"></l-polyline>
   </l-map>
   `,
   methods: {

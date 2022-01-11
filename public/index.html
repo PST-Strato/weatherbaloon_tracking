@@ -13,7 +13,7 @@
     <div id="app">
       <v-app>
         <v-container fluid class="ma-0 pa-0 d-flex flex-wrap flex-column fill-height">
-          <tracking-map :locations="this.locations"></tracking-map>
+          <!---TODO:display components-->
         </v-container>
       </v-app>
     </div>
@@ -24,29 +24,24 @@
     <script src="//unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="//unpkg.com/vue2-leaflet"></script>
     <script src="./components/map.js"></script>
+    <script src="./components/weather.js"></script>
     <script>
       new Vue({
         el: "#app",
         vuetify: new Vuetify(),
         components: {
           "tracking-map": trackingMap,
+          "weather-card": weatherCard,
         },
         data: {
           message: "Hello, world",
           locations: [],
         },
         created: function () {
-          setInterval(() => {
-            this.setLocations();
-          }, 50);
+          //TODO
         },
         methods: {
-          setLocations: function () {
-            axios.get("/location/getlocation").then((response) => {
-              this.locations = [];
-              this.locations = response["data"];
-            });
-          },
+          //TODO
         },
       });
     </script>
