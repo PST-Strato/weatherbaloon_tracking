@@ -19,6 +19,11 @@
   "dependencies": {
     "express": "^4.17.2",
     "fs": "0.0.1-security",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "sequelize": "^6.13.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.3.0",
+    "sqlite3": "^5.0.2"
   }
 }
