@@ -1,10 +1,15 @@
-var express = require("express");
-var serve_static = require("serve-static");
-var http = require("http");
+const express = require("express");
+const serve_static = require("serve-static");
+const http = require("http");
+const locationRoute = require("./routes/locations");
+const weatherRoute = require("./routes/weather");
 
-var app = express();
+const app = express();
 //Activation du serveur statique
 app.use(serve_static(__dirname + "/public"));
+
+app.use("/api/locations", locationRoute);
+app.use("/api/weather", weatherRoute);
 
 //Récupération du serveur http de l'application
 var serveur = http.Server(app);
