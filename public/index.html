@@ -12,8 +12,17 @@
   <body>
     <div id="app">
       <v-app>
-        <v-container fluid class="ma-0 pa-0 d-flex flex-wrap flex-column fill-height">
-          <!---TODO:display components-->
+        <v-container fluid class="grow ma-5 pa-5 d-flex flex-wrap justify-center">
+          <v-row class="grow">
+            <v-col cols="8">
+              <v-card elevation="20" class="fill-height">
+                <tracking-map :coordinates="this.locations"></tracking-map>
+              </v-card>
+            </v-col>
+            <v-col cols="4">
+              <weather-card :weather_data="this.weatherData"></weather-card>
+            </v-col>
+          </v-row>
         </v-container>
       </v-app>
     </div>
@@ -35,13 +44,27 @@
         },
         data: {
           message: "Hello, world",
-          locations: [],
+          locations: [[48.08809362529545, -0.7564902305603027]],
+          weatherData: [],
         },
         created: function () {
-          //TODO
+          this.getLocations();
+          this.getWeatherData();
         },
         methods: {
-          //TODO
+          getLocations: function () {
+            var tmp = [];
+            axios.get("/api/locations/getlastlocation").then((response) => {
+              this.tmp = response["data"];
+              this.locations.push(this.tmp);
+            });
+          },
+          getWeatherData: function () {
+            axios.get("/api/weather/getweatherdata").then((response) => {
+              this.weatherData = [];
+              this.weatherData = response["data"];
+            });
+          },
         },
       });
     </script>
