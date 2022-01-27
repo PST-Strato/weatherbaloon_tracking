@@ -1,72 +1,223 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Weather balloon tracking</title>
-    <meta charset="utf-8" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="//unpkg.com/leaflet/dist/leaflet.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
-  </head>
-  <body>
-    <div id="app">
-      <v-app>
-        <v-container fluid class="grow ma-5 pa-5 d-flex flex-wrap justify-center">
-          <v-row class="grow">
-            <v-col cols="8">
-              <v-card elevation="20" class="fill-height">
-                <tracking-map :coordinates="this.locations"></tracking-map>
-              </v-card>
-            </v-col>
-            <v-col cols="4">
-              <weather-card :weather_data="this.weatherData"></weather-card>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-app>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="//unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="//unpkg.com/vue2-leaflet"></script>
-    <script src="./components/map.js"></script>
-    <script src="./components/weather.js"></script>
-    <script>
-      new Vue({
-        el: "#app",
-        vuetify: new Vuetify(),
-        components: {
-          "tracking-map": trackingMap,
-          "weather-card": weatherCard,
+<head>
+  <title>Weather balloon tracking</title>
+  <meta charset="utf-8" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="//unpkg.com/leaflet/dist/leaflet.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+</head>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="//unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="//unpkg.com/vue2-leaflet"></script>
+<script src="./components/map.js"></script>
+<script src="./components/weather.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+<body>
+  <div id="app" class="app">
+    <v-app>
+      <v-container fluid class="grow ma-5 pa-5 d-flex flex-wrap justify-center">
+        <v-col cols="8">
+          <v-card elevation="20" class="fill-height">
+            <tracking-map :coordinates="this.locations"></tracking-map>
+          </v-card>
+        </v-col>
+        <v-col cols="4">
+          <v-row>
+            <weather-card :weather_data="this.weatherData"></weather-card>
+          </v-row>
+          <v-row>
+            
+            <v-card elevation="20" class="fill-height mt-4 justify-center">
+              <v-card-title class="text-center justify-center py-6">
+                <h3 class="text-h5">
+                  Data Chart
+                </h3>
+              </v-card-title>
+              <!--<v-tabs v-model="tab" background-color="deep-purple accent-4" centered dark icons-and-text>
+                <v-tabs-slider></v-tabs-slider>
+
+                <v-tab href="#subscribe">
+                  Subscribe
+                  <v-icon>mdi-phone</v-icon>
+                </v-tab>
+
+                <v-tab href="#contact">
+                  Contact
+                  <v-icon>mdi-heart</v-icon>
+                </v-tab>
+              </v-tabs>
+
+              <v-tabs-items v-model="tab">
+                <v-tab-item :key="1" value="subscribe">
+                  <v-card flat>
+                    <v-card-text>subscribe</v-card-text>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item :key="2" value="contact">
+                  <v-card flat>
+                    <v-card-text>contact</v-card-text>
+                  </v-card>
+                </v-tab-item>
+              </v-tabs-items>-->
+              <v-tabs v-model="tab" background-color="transparent" grow height="30px">
+                <v-tab href="#data1">
+                  <h5>Data1</h5>
+                </v-tab>
+                <v-tab href="#data2">
+                  <h5>Data2</h5>
+                </v-tab>
+                <v-tab href="#data3">
+                  <h5>Data3</h5>
+                </v-tab>
+              </v-tabs>
+
+              <v-tabs-items v-model="tab">
+                <v-tab-item :key="1" value="data1">
+                  <v-card flat>
+                    <line-chart id="lc" width="500px"></line-chart>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item :key="2" value="data2">
+                  <v-card flat>
+                    <line-chart id="lc2" width="500px"></line-chart>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item :key="3" value="data3">
+                  <v-card flat>
+                    <line-chart id="lc3" width="500px"></line-chart>
+                  </v-card>
+                </v-tab-item>
+              </v-tabs-items>
+            
+
+              <!--<v-dialog transition="dialog-bottom-transition" max-width="1000">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn width="500px" height="500px" v-bind="attrs" v-on="on" >
+                    <v-card elevation="20" class="fill-height mt-4 justify-center">
+                      <line-chart id="lc" width="400px"></line-chart>
+                    </v-card>
+                  </v-btn>
+                  
+                </template>
+                <template v-slot:default="dialog">
+                  <v-card>
+
+                    <v-card-text>
+                      <line-chart id="lc"></line-chart>
+                    </v-card-text>
+                    <v-card-actions class="justify-end">
+                      <v-btn text @click="dialog.value = false">Fermer</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>-->
+            </v-card>
+          </v-row>
+        </v-col>
+
+      </v-container>
+
+    </v-app>
+
+  </div>
+
+
+  <script>
+    var aux = Vue.component('line-chart', {
+      extends: VueChartJs.Line,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      },
+      mounted() {
+        this.gradient = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
+        this.gradient2 = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
+
+        this.gradient2.addColorStop(0, 'rgba(83,154,168, 0.9)')
+        this.gradient2.addColorStop(0.5, 'rgba(83,154,168, 0.5)');
+        this.gradient2.addColorStop(1, 'rgba(83,154,168, 0.2)');
+
+        this.gradient.addColorStop(0, 'rgba(247,108,6, 0.9)')
+        this.gradient.addColorStop(0.5, 'rgba(247,108,6, 0.25)');
+        this.gradient.addColorStop(1, 'rgba(247,108,6, 0)');
+
+
+        this.renderChart({
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [
+            {
+              label: 'Trinity',
+              borderColor: '#FC2525',
+              pointBackgroundColor: 'white',
+              borderWidth: 1,
+              pointBorderColor: 'white',
+              backgroundColor: this.gradient,
+              data: [40, 39, 10, 40, 45, 80, 40]
+            }, {
+              label: 'Insight',
+              borderColor: '#05CBE1',
+              pointBackgroundColor: 'white',
+              pointBorderColor: 'white',
+              borderWidth: 1,
+              backgroundColor: this.gradient2,
+              data: [60, 55, 32, 10, 2, 12, 53]
+            }
+          ]
+
+        }, this.options)
+
+      }
+
+    })
+
+
+    new Vue({
+      el: "#app",
+      vuetify: new Vuetify(),
+
+      components: {
+        "tracking-map": trackingMap,
+        "weather-card": weatherCard,
+      },
+
+      data: {
+        message: "Hello, world",
+        locations: [[48.08809362529545, -0.7564902305603027]],
+        weatherData: [],
+        tab: "subscribe"
+      },
+
+      created: function () {
+        this.getLocations();
+        this.getWeatherData();
+      },
+      methods: {
+        getLocations: function () {
+          var tmp = [];
+          axios.get("/api/locations/getlastlocation").then((response) => {
+            this.tmp = response["data"];
+            this.locations.push(this.tmp);
+          });
         },
-        data: {
-          message: "Hello, world",
-          locations: [[48.08809362529545, -0.7564902305603027]],
-          weatherData: [],
+        getWeatherData: function () {
+          axios.get("/api/weather/getweatherdata").then((response) => {
+            this.weatherData = [];
+            this.weatherData = response["data"];
+          });
         },
-        created: function () {
-          this.getLocations();
-          this.getWeatherData();
-        },
-        methods: {
-          getLocations: function () {
-            var tmp = [];
-            axios.get("/api/locations/getlastlocation").then((response) => {
-              this.tmp = response["data"];
-              this.locations.push(this.tmp);
-            });
-          },
-          getWeatherData: function () {
-            axios.get("/api/weather/getweatherdata").then((response) => {
-              this.weatherData = [];
-              this.weatherData = response["data"];
-            });
-          },
-        },
-      });
-    </script>
-  </body>
+      },
+    });
+
+  </script>
+</body>
+
 </html>
