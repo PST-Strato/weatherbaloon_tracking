@@ -1,10 +1,17 @@
+const { json } = require("express/lib/response");
 const models = require("../models");
 
 module.exports = {
   getWeatherData: function (req, res) {
     models.Weather.findOne({
       raw: true,
-      attributes: ["s_temperature_inside", "s_temperature_outside", "s_hygrometry", "s_pressure", "s_vref"],
+      attributes: [
+        "s_temperature_inside",
+        "s_temperature_outside",
+        "s_hygrometry",
+        "s_pressure",
+        "s_vref",
+      ],
       order: [["s_id", "DESC"]],
     })
       .then(function (weatherData) {
@@ -14,15 +21,21 @@ module.exports = {
         const v_ref = weatherData.s_vref;
         const hygrometry = weatherData.s_hygrometry;
         const result = {
-          temperature_inside: ((tempInside * v_ref) / 4095).toFixed(2),
-          temperature_outside: ((tempOutside * v_ref) / 4095).toFixed(2),
+          temperature_inside: ((tempInside * v_ref) / 4095).toFixed(
+            2
+          ),
+          temperature_outside: ((tempOutside * v_ref) / 4095).toFixed(
+            2
+          ),
           pressure: ((pressure * v_ref) / 4095).toFixed(2),
           hygrometry: ((hygrometry * v_ref) / 4095).toFixed(2),
         };
         return res.send(result).status(201);
       })
       .catch((err) => {
-        return res.status(500).json({ error: "There was an error querying weather data" });
+        return res.status(500).json({
+          error: "There was an error querying weather data",
+        });
       });
   },
 
@@ -37,13 +50,20 @@ module.exports = {
         temperatureInside.forEach((temperature) => {
           const keys = Object.keys(temperature);
           for (let i = 0; i < keys.length - 1; i++) {
-            result.push(((temperature[keys[i]] * temperature[keys[i + 1]]) / 4095).toFixed(2));
+            result.push(
+              (
+                (temperature[keys[i]] * temperature[keys[i + 1]]) /
+                4095
+              ).toFixed(2)
+            );
           }
         });
         return res.send(result);
       })
       .catch((err) => {
-        return res.status(500).json({ error: "There was an error querying weather temperature" });
+        return res.status(500).json({
+          error: "There was an error querying weather temperature",
+        });
       });
   },
 
@@ -58,13 +78,20 @@ module.exports = {
         temperatureOutside.forEach((temperature) => {
           const keys = Object.keys(temperature);
           for (let i = 0; i < keys.length - 1; i++) {
-            result.push(((temperature[keys[i]] * temperature[keys[i + 1]]) / 4095).toFixed(2));
+            result.push(
+              (
+                (temperature[keys[i]] * temperature[keys[i + 1]]) /
+                4095
+              ).toFixed(2)
+            );
           }
         });
         return res.send(result);
       })
       .catch((err) => {
-        return res.status(500).json({ error: "There was an error querying weather temperature" });
+        return res.status(500).json({
+          error: "There was an error querying weather temperature",
+        });
       });
   },
 
@@ -85,7 +112,34 @@ module.exports = {
         return res.send(result);
       })
       .catch((err) => {
-        return res.status(500).json({ error: "There was an error querying weather temperature" });
+        return res.status(500).json({
+          error: "There was an error querying weather temperature",
+        });
+      });
+  },
+
+  addWeatherData: function (req, res) {
+    const newWeatherData = models.Weather.create({
+      s_id: req.body.s_id,
+      s_rssi: req.body.s_rssi,
+      s_snr: req.body.s_snr,
+      s_remaining_samples_to_send:
+        req.body.s_remaining_samples_to_send,
+      s_temperature_inside: req.body.s_temperature_inside,
+      s_temperature_outside: req.body.s_temperature_outside,
+      s_hygrometry: req.body.s_hygrometry,
+      s_pressure: req.body.s_pressure,
+      s_vref: req.body.s_vref,
+    })
+      .then(function (newWeatherData) {
+        return res
+          .status(201)
+          .json({ newWeatherDataID: newWeatherData.id });
+      })
+      .catch(function (err) {
+        return res
+          .status(500)
+          .json({ error: "cannot add weather data" });
       });
   },
 };

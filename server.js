@@ -5,9 +5,13 @@ const locationRoute = require("./routes/locations");
 const weatherRoute = require("./routes/weather");
 
 const app = express();
+
+app.use(express.json());
+
 //Activation du serveur statique
 app.use(serve_static(__dirname + "/public"));
 
+//Definition des routes
 app.use("/api/locations", locationRoute);
 app.use("/api/weather", weatherRoute);
 
