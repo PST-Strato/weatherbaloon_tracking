@@ -29,7 +29,7 @@
       <v-app>
         <v-container
           fluid
-          class="grow ma-3 pa-3 d-flex flex-wrap justify-center"
+          class="grow ma-2 pa-2 d-flex flex-wrap justify-center"
         >
           <v-row class="grow">
             <v-col cols="7">
@@ -80,15 +80,28 @@
         },
         data: {
           message: "Hello, world",
-          locations: [[48.08809362529545, -0.7564902305603027]],
+          locations: [[48.088, -0.756]],
           weatherData: [],
         },
-        created: function () {
-          this.getLocations();
-          this.getWeatherData();
+        mounted: async function () {
+          this.getAllLocations();
+          await setInterval(() => {
+            this.fetchData();
+          }, 10000);
         },
         methods: {
-          getLocations: function () {
+          getAllLocations: function () {
+            var tmp = [];
+            axios
+              .get("/api/locations/getlocations")
+              .then((response) => {
+                this.tmp = response["data"];
+                for (let i = 0; i < this.tmp.length; i++) {
+                  this.locations.push(this.tmp[i]);
+                }
+              });
+          },
+          getLastLocations: function () {
             var tmp = [];
             axios
               .get("/api/locations/getlastlocation")
@@ -104,6 +117,11 @@
                 this.weatherData = [];
                 this.weatherData = response["data"];
               });
+          },
+          fetchData: function () {
+            this.getLastLocations();
+            this.getWeatherData();
+            console.log("Je suis beau");
           },
         },
       });

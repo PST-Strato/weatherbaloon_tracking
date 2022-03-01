@@ -5,7 +5,7 @@ var trackingMap = {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      center: [48.08809362529545, -0.7564902305603027],
+      center: [48.088, -0.756],
       zoom: 12,
       polyline: {
         color: "green",
