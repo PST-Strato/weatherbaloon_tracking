@@ -3,24 +3,60 @@
   <head>
     <title>Weather balloon tracking</title>
     <meta charset="utf-8" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="//unpkg.com/leaflet/dist/leaflet.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="//unpkg.com/leaflet/dist/leaflet.css"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
   </head>
   <body>
     <div id="app">
       <v-app>
-        <v-container fluid class="grow ma-5 pa-5 d-flex flex-wrap justify-center">
+        <v-container
+          fluid
+          class="grow ma-3 pa-3 d-flex flex-wrap justify-center"
+        >
           <v-row class="grow">
-            <v-col cols="8">
+            <v-col cols="7">
               <v-card elevation="20" class="fill-height">
-                <tracking-map :coordinates="this.locations"></tracking-map>
+                <tracking-map
+                  :coordinates="this.locations"
+                ></tracking-map>
               </v-card>
             </v-col>
-            <v-col cols="4">
-              <weather-card :weather_data="this.weatherData"></weather-card>
+            <v-col cols="5">
+              <v-container>
+                <v-row class="shrink">
+                  <v-col cols="12">
+                    <weather-card
+                      :weather_data="this.weatherData"
+                      :coordinates="this.locations[this.locations.length-1]"
+                    ></weather-card>
+                  </v-col>
+                </v-row>
+                <v-row class="shrink">
+                  <v-col cols="12">
+                    <v-card elevation="20">
+                      Ici reposeront les graphiques!!
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-col>
           </v-row>
         </v-container>
@@ -54,16 +90,20 @@
         methods: {
           getLocations: function () {
             var tmp = [];
-            axios.get("/api/locations/getlastlocation").then((response) => {
-              this.tmp = response["data"];
-              this.locations.push(this.tmp);
-            });
+            axios
+              .get("/api/locations/getlastlocation")
+              .then((response) => {
+                this.tmp = response["data"];
+                this.locations.push(this.tmp);
+              });
           },
           getWeatherData: function () {
-            axios.get("/api/weather/getweatherdata").then((response) => {
-              this.weatherData = [];
-              this.weatherData = response["data"];
-            });
+            axios
+              .get("/api/weather/getweatherdata")
+              .then((response) => {
+                this.weatherData = [];
+                this.weatherData = response["data"];
+              });
           },
         },
       });

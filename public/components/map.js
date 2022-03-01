@@ -3,7 +3,8 @@ var trackingMap = {
   data: function () {
     return {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      attribution:
+        '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       center: [48.08809362529545, -0.7564902305603027],
       zoom: 12,
       polyline: {
@@ -26,6 +27,7 @@ var trackingMap = {
       @update:center="centerUpdated"
     >
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+      <l-marker :lat-lng="coordinates[0]"></l-marker>
       <l-marker :lat-lng="coordinates[coordinates.length-1]"></l-marker>
       <l-polyline :lat-lngs="coordinates" :color="polyline.color"></l-polyline>
   </l-map>

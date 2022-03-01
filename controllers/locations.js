@@ -20,7 +20,9 @@ module.exports = {
         return res.send(locationsArray).status(201);
       })
       .catch((err) => {
-        return res.status(500).json({ error: "There was an error querying locations" });
+        return res
+          .status(500)
+          .json({ error: "There was an error querying locations" });
       });
   },
 
@@ -39,7 +41,28 @@ module.exports = {
         return res.send(result).status(201);
       })
       .catch((error) => {
-        return res.status(500).json({ error: "There was an error querying last location" });
+        return res
+          .status(500)
+          .json({
+            error: "There was an error querying last location",
+          });
+      });
+  },
+
+  addLocation: function (req, res) {
+    const newLocation = models.Locations.create({
+      g_time: req.body.g_time,
+      g_latitude: req.body.g_latitude,
+      g_longitude: req.body.g_longitude,
+      g_speed: req.body.g_speed,
+      g_battery_status: req.body.g_battery_status,
+      g_signal_status: req.body.g_signal_status,
+    })
+      .then(function (newLocation) {
+        return res.status(201).json({ newLocation: newLocation.id });
+      })
+      .catch(function (err) {
+        return res.status(500).json({ error: "cannot add location" });
       });
   },
 };
