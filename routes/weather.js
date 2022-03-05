@@ -18,7 +18,7 @@ router.get(
 
 router.get("/getpressure", weatherController.getPressure);
 
-router.get("gethygrometry", weatherController.getHygrometry);
+router.get("/gethygrometry", weatherController.getHygrometry);
 
 router.get("/getime", weatherController.getTime);
 

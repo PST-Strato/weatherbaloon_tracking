@@ -52,7 +52,9 @@
                 <v-row class="shrink">
                   <v-col cols="12">
                     <v-card elevation="20">
-                      Ici reposeront les graphiques!!
+                      <weather-chart
+                        :series="this.series"
+                      ></weather-chart>
                     </v-card>
                   </v-col>
                 </v-row>
@@ -68,8 +70,11 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="//unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="//unpkg.com/vue2-leaflet"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
     <script src="./components/map.js"></script>
     <script src="./components/weather.js"></script>
+    <script src="./components/chart.js"></script>
     <script>
       new Vue({
         el: "#app",
@@ -77,17 +82,44 @@
         components: {
           "tracking-map": trackingMap,
           "weather-card": weatherCard,
+          "weather-chart": weatherChart,
         },
         data: {
           message: "Hello, world",
           locations: [[48.088, -0.756]],
           weatherData: [],
+          chartData: {
+            temperatureOutside: [
+              {
+                name: "Temperature outside",
+                data: [],
+              },
+            ],
+            temperatureInside: [
+              {
+                name: "Temperature inside",
+                data: [],
+              },
+            ],
+            pressure: [
+              {
+                name: "Pressure",
+                data: [],
+              },
+            ],
+            hygrometry: [
+              {
+                name: "Humidity",
+                data: [],
+              },
+            ],
+          },
         },
         mounted: async function () {
           this.getAllLocations();
           await setInterval(() => {
             this.fetchData();
-          }, 10000);
+          }, 1000);
         },
         methods: {
           getAllLocations: function () {
@@ -110,6 +142,44 @@
                 this.locations.push(this.tmp);
               });
           },
+          getTemperatureInside: function () {
+            axios
+              .get("/api/weather/getemperatureinside")
+              .then((response) => {
+                this.tmp = response["data"];
+                for (let i = 0; i < this.tmp.length; i++) {
+                  this.chartData.temperatureInside.data.push(tmp[i]);
+                }
+              });
+          },
+          getTemperatureOutside: function () {
+            axios
+              .get("/api/weather/getemperatureoutside")
+              .then((response) => {
+                this.tmp = response["data"];
+                for (let i = 0; i < this.tmp.length; i++) {
+                  this.chartData.temperatureOutside.data.push(tmp[i]);
+                }
+              });
+          },
+          getPressure: function () {
+            axios.get("/api/weather/getpressure").then((response) => {
+              this.tmp = response["data"];
+              for (let i = 0; i < this.tmp.length; i++) {
+                this.chartData.pressure.data.push(tmp[i]);
+              }
+            });
+          },
+          getHygrometry: function () {
+            axios
+              .get("/api/weather/gethygrometry")
+              .then((response) => {
+                this.tmp = response["data"];
+                for (let i = 0; i < this.tmp.length; i++) {
+                  this.chartData.hygrometry.data.push(tmp[i]);
+                }
+              });
+          },
           getWeatherData: function () {
             axios
               .get("/api/weather/getweatherdata")
@@ -118,10 +188,25 @@
                 this.weatherData = response["data"];
               });
           },
+          setChartData: function () {},
+          updateChartData: function () {
+            this.chartData.temperatureOutside.data.push(
+              this.weatherData.temperature_outside
+            );
+            this.chartData.pressure.data.push(
+              this.weatherData.pressure
+            );
+            this.chartData.temperatureInside.data.push(
+              this.weatherData.temperature_inside
+            );
+            this.chartData.hygrometry.data.push(
+              this.weatherData.weather_data.hygrometry
+            );
+          },
           fetchData: function () {
             this.getLastLocations();
             this.getWeatherData();
-            console.log("Je suis beau");
+            this.updateChartData();
           },
         },
       });
