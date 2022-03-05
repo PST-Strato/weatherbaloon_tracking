@@ -95,6 +95,61 @@ module.exports = {
       });
   },
 
+  getPressure: function (req, res) {
+    models.Weather.findAll({
+      raw: true,
+      attributes: ["s_pressure", "s_vref"],
+      order: [["s_id", "ASC"]],
+    })
+      .then((pressure) => {
+        const result = [];
+        pressure.forEach((pres) => {
+          const keys = Object.keys(pres);
+          for (let i = 0; i < keys.length - 1; i++) {
+            result.push(
+              ((pres[keys[i]] * pres[keys[i + 1]]) / 4095).toFixed(2)
+            );
+          }
+        });
+        return res.send(result);
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          error: "There was an error querying weather pressure",
+          err: err,
+        });
+      });
+  },
+
+  getHygrometry: function (req, res) {
+    models.Weather.findAll({
+      raw: true,
+      attributes: ["s_hygrometry", "s_vref"],
+      order: [["s_id", "ASC"]],
+    })
+      .then((hygrometry) => {
+        const result = [];
+        hygrometry.forEach((_hygrometry) => {
+          const keys = Object.keys(_hygrometry);
+          for (let i = 0; i < keys.length - 1; i++) {
+            result.push(
+              (
+                (_hygrometry[keys[i]] * _hygrometry[keys[i + 1]]) /
+                4095
+              ).toFixed(2)
+            );
+          }
+        });
+        return res.send(result);
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          error: "There was an error querying weather pressure",
+          err: err,
+        });
+      });
+  },
+
   getTime: function (req, res) {
     models.Weather.findAll({
       raw: true,
