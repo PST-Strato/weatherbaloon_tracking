@@ -21,14 +21,22 @@ module.exports = {
         const v_ref = weatherData.s_vref;
         const hygrometry = weatherData.s_hygrometry;
         const result = {
-          temperature_inside: ((tempInside * v_ref) / 4095).toFixed(
-            2
-          ),
-          temperature_outside: ((tempOutside * v_ref) / 4095).toFixed(
-            2
-          ),
+          temperature_inside: (
+            (tempInside * v_ref) /
+            (4095 * 10)
+          ).toFixed(2),
+          temperature_outside: (
+            (tempOutside * v_ref) /
+            (4095 * 10)
+          ).toFixed(2),
           pressure: ((pressure * v_ref) / 4095).toFixed(2),
-          hygrometry: ((hygrometry * v_ref) / 4095).toFixed(2),
+          hygrometry: ((hygrometry * v_ref) / (4095 * 10)).toFixed(2),
+          height: (
+            (8.314462 *
+              ((tempOutside * v_ref) / (4095 * 10)) *
+              Math.log(1 + (pressure * v_ref) / 4095 / 101300)) /
+            (-0.0289644 * 9.8169)
+          ).toFixed(2),
         };
         return res.send(result).status(201);
       })

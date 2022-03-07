@@ -9,14 +9,7 @@ var weatherChart = {
         chart: {
           id: "realtime",
           group: "social",
-          type: "line",
-          animations: {
-            enabled: true,
-            easing: "linear",
-            dynamicAnimation: {
-              speed: 1000,
-            },
-          },
+          type: "area",
           toolbar: {
             show: false,
           },
@@ -37,7 +30,6 @@ var weatherChart = {
           labels: {
             show: false,
           },
-          range: 60,
         },
         yaxis: {},
         legend: {
@@ -54,11 +46,11 @@ var weatherChart = {
           data: this.serie[0].data,
         },
       ]);
-    }, 1000);
+    }, 60000);
   },
   template: `
   <div id="realtime">
-    <apexchart type="line" ref="chart" 
+    <apexchart type="area" ref="chart" 
       :options="chartOptions" :series="this.serie">
     </apexchart>
   </div>

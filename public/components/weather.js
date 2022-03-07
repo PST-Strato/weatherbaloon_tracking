@@ -11,7 +11,14 @@ var weatherCard = {
         <span class="">{{coordinates[1]}}</span>
       </v-container>
       <v-container class="pa-2 text-center" justify="center">
-        <div class="text-h4 font-weight-black">{{weather_data.temperature_outside}}&deg C</div>
+        <v-row>
+          <v-col cols="6">
+            <div class="text-h4 font-weight-black">{{weather_data.height}} m</div>
+          </v-col>
+          <v-col cols="6">
+            <div class="text-h4 font-weight-black">{{weather_data.temperature_outside}}&deg C</div>
+          </v-col>
+        </v-row>
       </v-container>
       <v-container class="pa-0 ma-auto">
         <v-row class="text-center" justify="center">
