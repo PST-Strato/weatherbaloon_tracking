@@ -8,6 +8,7 @@ var weatherChart = {
       chartOptions: {
         chart: {
           id: "realtime",
+          group: "social",
           type: "line",
           animations: {
             enabled: true,
