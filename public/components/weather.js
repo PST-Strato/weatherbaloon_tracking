@@ -16,7 +16,7 @@ var weatherCard = {
             <div class="text-h4 font-weight-black">{{weather_data.height}} m</div>
           </v-col>
           <v-col cols="6">
-            <div class="text-h4 font-weight-black">{{weather_data.temperature_outside}}&deg C</div>
+            <div class="text-h4 font-weight-black">{{weather_data.temperature_outside}}℃</div>
           </v-col>
         </v-row>
       </v-container>
