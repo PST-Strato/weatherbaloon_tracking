@@ -25,12 +25,9 @@ module.exports = {
             (tempInside * v_ref) /
             (4095 * 10)
           ).toFixed(2),
-          temperature_outside: (
-            (tempOutside * v_ref) /
-            (4095 * 10)
-          ).toFixed(2),
+          temperature_outside: (tempOutside / 10).toFixed(2),
           pressure: ((pressure * v_ref) / 4095).toFixed(2),
-          hygrometry: ((hygrometry * v_ref) / (4095 * 10)).toFixed(2),
+          hygrometry: (hygrometry / 10).toFixed(2),
           height: (
             (8.314462 *
               ((tempOutside * v_ref) / (4095 * 10)) *
@@ -86,12 +83,7 @@ module.exports = {
         temperatureOutside.forEach((temperature) => {
           const keys = Object.keys(temperature);
           for (let i = 0; i < keys.length - 1; i++) {
-            result.push(
-              (
-                (temperature[keys[i]] * temperature[keys[i + 1]]) /
-                4095
-              ).toFixed(2)
-            );
+            result.push((temperature[keys[i]] / 10).toFixed(2));
           }
         });
         return res.send(result);
@@ -140,12 +132,7 @@ module.exports = {
         hygrometry.forEach((_hygrometry) => {
           const keys = Object.keys(_hygrometry);
           for (let i = 0; i < keys.length - 1; i++) {
-            result.push(
-              (
-                (_hygrometry[keys[i]] * _hygrometry[keys[i + 1]]) /
-                4095
-              ).toFixed(2)
-            );
+            result.push((_hygrometry[keys[i]] / 10).toFixed(2));
           }
         });
         return res.send(result);
