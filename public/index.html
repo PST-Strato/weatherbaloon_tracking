@@ -27,21 +27,26 @@
   <body>
     <div id="app">
       <v-app>
+        <v-system-bar height="60" dark color="primary">
+          <h1>WEATHER BALLON TRACKER</h1>
+        </v-system-bar>
+
         <v-container
           fluid
-          class="grow ma-2 pa-2 d-flex flex-wrap justify-center"
+          class="grow d-flex flex-column flex-nowrap ma-2 pa-2 justify-center"
         >
           <v-row class="grow">
-            <v-col cols="7">
-              <v-card elevation="20" class="fill-height">
+            <v-col cols="6">
+              <v-card elevation="5" class="fill-height">
                 <tracking-map
                   :coordinates="this.locations"
                 ></tracking-map>
               </v-card>
             </v-col>
-            <v-col cols="5">
-              <v-container>
-                <v-row class="shrink">
+
+            <v-col cols="6">
+              <v-container class="fill-height">
+                <v-row class="shrink ma-0 pa-0">
                   <v-col cols="12">
                     <weather-card
                       :weather_data="this.weatherData"
@@ -49,12 +54,35 @@
                     ></weather-card>
                   </v-col>
                 </v-row>
-                <v-row class="shrink">
+
+                <v-row>
                   <v-col cols="12">
-                    <v-card elevation="20">
-                      <weather-chart
-                        :series="this.series"
-                      ></weather-chart>
+                    <v-card elevation="5">
+                      <v-tabs
+                        v-model="tab"
+                        background-color="primary"
+                        center-active
+                        dark
+                      >
+                        <v-tab
+                          v-for="data in this.chartData"
+                          :key="data[0].name"
+                          >{{data[0].name}}</v-tab
+                        >
+                      </v-tabs>
+
+                      <v-tabs-items v-model="tab">
+                        <v-tab-item
+                          v-for="data in this.chartData"
+                          :key="data[0].name"
+                        >
+                          <v-card>
+                            <weather-chart
+                              :serie="data"
+                            ></weather-chart>
+                          </v-card>
+                        </v-tab-item>
+                      </v-tabs-items>
                     </v-card>
                   </v-col>
                 </v-row>
@@ -62,6 +90,18 @@
             </v-col>
           </v-row>
         </v-container>
+
+        <v-breadcrumbs :items="items" class="justify-center">
+          <template v-slot:item="{ item }">
+            <v-breadcrumbs-item
+              :href="item.href"
+              :disabled="item.disabled"
+              target="_blank"
+            >
+              {{ item.text.toUpperCase() }}
+            </v-breadcrumbs-item>
+          </template>
+        </v-breadcrumbs>
       </v-app>
     </div>
 
@@ -88,6 +128,7 @@
           message: "Hello, world",
           locations: [[48.088, -0.756]],
           weatherData: [],
+          tab: null,
           chartData: {
             temperatureOutside: [
               {
@@ -114,12 +155,46 @@
               },
             ],
           },
+          items: [
+            {
+              text: "Shrafdine OURO-AGORO",
+              disabled: false,
+              href: "https://www.linkedin.com/in/shrafdine-ouro-agoro",
+            },
+            {
+              text: "Luc BOURNAUD",
+              disabled: false,
+              href: "breadcrumbs_link",
+            },
+            {
+              text: "Valérian CHAPELLIÈRE",
+              disabled: false,
+              href: "breadcrumbs_link",
+            },
+            {
+              text: "Amaury LE FLOC’H",
+              disabled: false,
+              href: "breadcrumbs_link",
+            },
+            {
+              text: "Grégoire SOURDAT",
+              disabled: false,
+              href: "breadcrumbs_link",
+            },
+          ],
+        },
+        created: function () {
+          this.getAllLocations();
+          this.getWeatherData();
+          this.setChartData();
         },
         mounted: async function () {
-          this.getAllLocations();
           await setInterval(() => {
             this.fetchData();
           }, 1000);
+          await setInterval(() => {
+            this.getLastLocations();
+          }, 60000);
         },
         methods: {
           getAllLocations: function () {
@@ -143,42 +218,54 @@
               });
           },
           getTemperatureInside: function () {
+            var tmp = [];
             axios
               .get("/api/weather/getemperatureinside")
               .then((response) => {
                 this.tmp = response["data"];
                 for (let i = 0; i < this.tmp.length; i++) {
-                  this.chartData.temperatureInside.data.push(tmp[i]);
+                  this.chartData.temperatureInside[0].data.push(
+                    this.tmp[i]
+                  );
                 }
               });
+            this.chartData.temperatureInside[0].data.map(Number);
           },
           getTemperatureOutside: function () {
+            var tmp = [];
             axios
               .get("/api/weather/getemperatureoutside")
               .then((response) => {
                 this.tmp = response["data"];
                 for (let i = 0; i < this.tmp.length; i++) {
-                  this.chartData.temperatureOutside.data.push(tmp[i]);
+                  this.chartData.temperatureOutside[0].data.push(
+                    this.tmp[i]
+                  );
                 }
               });
+            this.chartData.temperatureOutside[0].data.map(Number);
           },
           getPressure: function () {
+            var tmp = [];
             axios.get("/api/weather/getpressure").then((response) => {
               this.tmp = response["data"];
               for (let i = 0; i < this.tmp.length; i++) {
-                this.chartData.pressure.data.push(tmp[i]);
+                this.chartData.pressure[0].data.push(this.tmp[i]);
               }
             });
+            this.chartData.pressure[0].data.map(Number);
           },
           getHygrometry: function () {
+            var tmp = [];
             axios
               .get("/api/weather/gethygrometry")
               .then((response) => {
                 this.tmp = response["data"];
                 for (let i = 0; i < this.tmp.length; i++) {
-                  this.chartData.hygrometry.data.push(tmp[i]);
+                  this.chartData.hygrometry[0].data.push(this.tmp[i]);
                 }
               });
+            this.chartData.hygrometry[0].data.map(Number);
           },
           getWeatherData: function () {
             axios
@@ -188,23 +275,27 @@
                 this.weatherData = response["data"];
               });
           },
-          setChartData: function () {},
+          setChartData: function () {
+            this.getTemperatureOutside();
+            this.getTemperatureInside();
+            this.getPressure();
+            this.getHygrometry();
+          },
           updateChartData: function () {
-            this.chartData.temperatureOutside.data.push(
+            this.chartData.temperatureOutside[0].data.push(
               this.weatherData.temperature_outside
             );
-            this.chartData.pressure.data.push(
+            this.chartData.pressure[0].data.push(
               this.weatherData.pressure
             );
-            this.chartData.temperatureInside.data.push(
+            this.chartData.temperatureInside[0].data.push(
               this.weatherData.temperature_inside
             );
-            this.chartData.hygrometry.data.push(
-              this.weatherData.weather_data.hygrometry
+            this.chartData.hygrometry[0].data.push(
+              this.weatherData.hygrometry
             );
           },
           fetchData: function () {
-            this.getLastLocations();
             this.getWeatherData();
             this.updateChartData();
           },
