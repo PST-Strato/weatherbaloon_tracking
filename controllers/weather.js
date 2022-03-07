@@ -22,8 +22,8 @@ module.exports = {
         const hygrometry = weatherData.s_hygrometry;
         const result = {
           temperature_inside: (
-            (tempInside * v_ref) /
-            (4095 * 10)
+            (((tempInside * v_ref) /
+            4095)-500)/10
           ).toFixed(2),
           temperature_outside: (tempOutside / 10).toFixed(2),
           pressure: ((pressure * v_ref) / 4095).toFixed(2),
